@@ -12,10 +12,23 @@ const port = process.env.PORT || 8000;
 const app = express();
 
 // CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000', // for local development
+  'https://task-manager-app-sable.vercel.app' // your deployed frontend
+];
 
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // if you're using cookies for authentication
+};
 
-// Middleware setup
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
